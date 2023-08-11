@@ -64,7 +64,7 @@ pub fn get_task_by_id(t_id: i32) -> Json<Vec<Task>> {
 }
 
 // TODO : Return an error for any extra data POSTED. Eventually return something for a successful insert
-#[post("/new", data = "<post>")]
+#[post("/", data = "<post>")]
 pub fn insert_task(post: Json<NewTask>) {
     use crate::schema::task;
     let conn = &mut establish_connection();

@@ -19,3 +19,9 @@ pub struct Task {
 pub struct NewTask<'a> {
     pub name: &'a str,
 }
+
+#[derive(Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
+pub struct ResponseMessage {
+    pub msg: String,
+}

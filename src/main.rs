@@ -9,8 +9,10 @@ use routes::*;
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount(
-        "/api",
+    rocket::build()
+    .register("/", catchers![not_found])
+    .mount(
+    "/api",
         routes![
             get_pending_tasks,
             get_accomplished_tasks,

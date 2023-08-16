@@ -55,7 +55,7 @@ curl --location 'localhost:8000/tasks' \
 }'
 ```
 Response body 
-```json
+```
 {
 
 "id": int,
@@ -75,7 +75,7 @@ curl --location 'localhost:8000/tasks/3'
 
 Response : 
 
-```json
+```
 {
 
 "id": int,
@@ -93,13 +93,13 @@ Response :
 `PATCH /tasks/<id>` - Change the `id` tasks' title.
 
 Body :
-```json
+```
 {
 	name: string
 }
 ```
 Response
-```json
+```
 {
 
 "id": int,

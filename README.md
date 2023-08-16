@@ -40,6 +40,7 @@ Example response
 ```
 
 `POST /tasks/` - Create a new task
+
 Request body : 
 ```
 {
@@ -88,8 +89,11 @@ Response :
 ```
 
 `GET /tasks/pending`  - Fetch all unaccomplished tasks
+
 `GET /tasks/accomplished`  - Fetch all accomplished tasks
+
 `DELETE /tasks/<id>`  - Delete task by id
+
 `PATCH /tasks/<id>` - Change the `id` tasks' title.
 
 Body :

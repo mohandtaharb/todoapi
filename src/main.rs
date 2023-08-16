@@ -2,14 +2,18 @@
 extern crate rocket;
 
 pub mod db;
-pub mod model;
-pub mod routes;
 pub mod schema;
-use routes::*;
+pub mod tasks;
+pub mod user;
 
+use tasks::routes::*;
+
+use dotenvy::dotenv;
 use rocket::fairing::{Fairing, Info, Kind};
 use rocket::http::{Header, Method, Status};
 use rocket::{Request, Response};
+
+use user::auth::login;
 
 pub struct CORS;
 
@@ -32,27 +36,34 @@ impl Fairing for CORS {
             response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
         }
 
-        response.set_header(Header::new(
-            "Access-Control-Allow-Origin",
-            "*",
-        ));
+        response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
         response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
     }
 }
 
-
 #[launch]
 fn rocket() -> _ {
+    dotenv().ok();
 
-    rocket::build().attach(CORS).register("/", catchers![not_found]).mount(
-        "/api",
-        routes![
-            get_pending_tasks,
-            get_accomplished_tasks,
-            get_all_tasks,
-            get_task_by_id,
-            insert_task,
-            delete_task
-        ],
-    )
+    rocket::build()
+        .attach(CORS)
+        .register(
+            "/",
+            catchers![not_found, internal_server_error, unauthorized, bad_request],
+        )
+        .mount(
+            "/tasks",
+            routes![
+                get_pending_tasks,
+                get_accomplished_tasks,
+                get_all_tasks,
+                get_task_by_id,
+                insert_task,
+                delete_task,
+                accomplish,
+                unaccomplish,
+                change_task_title
+            ],
+        )
+        .mount("/user", routes![login])
 }

@@ -16,10 +16,7 @@ cargo build
 6. Start the web server with `cargo run`
 
 ## Authorization
-JWT is used to authenticate users. Due to time constraints, no proper login/register system has been implemented but a token can be obtained using the endpoint
-```GET /user/login/<id>``` with `id` being any Integer.
-
-This token then has to be added to the `Authorization` HTTP header for any subsequent request.
+A `POST` request is sent to `/user/login` with the following JSON in the body : `{username: "username", password: "password"}`. The server then sends back a Token that will be used in the Authorization header of HTTP requests to access the secure endpoints.
 
 ## Endpoints
 `GET /tasks/` - Fetch all tasks

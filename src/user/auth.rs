@@ -1,10 +1,10 @@
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use rocket::{
-    http::Status,
+    http::{Status},
     request::{FromRequest, Outcome},
     serde::{json::Json, Deserialize, Serialize},
-    Request,
+    Request
 };
 use std::env;
 
@@ -17,7 +17,7 @@ pub struct Claims {
 }
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct Message {
+pub struct Message {
     msg: String,
 }
 
@@ -26,11 +26,23 @@ struct Message {
 pub struct EncodeResponse {
     token: String,
 }
+#[derive(Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
+pub struct LoginInfo {
+    pub username: String,
+    pub password: String,
+}
 
-#[get("/login/<id>")]
-pub fn login(id: i32) -> Json<EncodeResponse> {
+#[post("/login", data="<login_info>")]
+pub fn login(login_info: Json<LoginInfo>) -> Json<EncodeResponse> {
+    let login_info = login_info.into_inner();
+    // Normally here you'd check the credentials and return the user id from the DB
+    // We'll just do this for now just to have something
+    // Calculates the sum of the characters
+    let id = login_info.username.chars().map(|x| x as i32).sum();
+
     let secret = env::var("SECRET").expect("Please set a secret key");
-    let exp = (Utc::now() + Duration::days(3)).timestamp() as usize;
+    let exp = (Utc::now() + Duration::hours(24)).timestamp() as usize;
     let iat = Utc::now().timestamp() as usize;
     let claims = Claims { exp, iat, id };
     let token = encode(
@@ -40,9 +52,9 @@ pub fn login(id: i32) -> Json<EncodeResponse> {
     )
     .unwrap();
 
-    Json(EncodeResponse { token })
+    
+    Json(EncodeResponse{token} )
 }
-
 
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
@@ -78,3 +90,5 @@ impl<'a> FromRequest<'a> for AuthenticationToken {
         }
     }
 }
+
+
